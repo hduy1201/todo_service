@@ -1,10 +1,12 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"time"
 
+	"firebase.google.com/go/v4/auth"
 	"github.com/cristalhq/jwt"
 )
 
@@ -56,4 +58,12 @@ func JWTVerify(stringToken string) (string, error) {
 	}
 
 	return uid, nil
+}
+
+func FirebaseVerify(token string, authClient *auth.Client) (string, error) {
+	decodedToken, err := authClient.VerifyIDToken(context.Background(), token)
+	if err != nil {
+		return "", err
+	}
+	return decodedToken.UID, nil
 }
